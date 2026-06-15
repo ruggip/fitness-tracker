@@ -280,7 +280,7 @@
       <input type="password" id="cfg-key" placeholder="sb_publishable_...">
       <div style="font-size:12px;color:var(--text3);margin-top:4px">Trovala in Supabase → Settings → API → anon public</div>
     </div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="saveConfig()">Accedi →</button>
+    <button class="btn btn-primary" id="btn-accedi" style="width:100%;justify-content:center;margin-top:8px">Accedi →</button>
   </div>
 </div>
 
@@ -828,7 +828,7 @@ function openLogModal() {
   openModal('modal-log');
 }
 
-function saveLog() {
+async function saveLog() {
   const s = schede[currentScheda];
   const entry = {
     id: Date.now(),
@@ -873,7 +873,7 @@ function renderLog() {
   `).join('');
 }
 
-function deleteLog(i) {
+async function deleteLog(i) {
   if (!confirm('Eliminare questa sessione?')) return;
   logs.splice(i, 1);
   await syncTable('logs', logs);
@@ -928,7 +928,7 @@ function openEditPiano() {
   openModal('modal-piano');
 }
 
-function savePiano() {
+async function savePiano() {
   piano = {
     colazione: document.getElementById('piano-colazione').value,
     proteine: document.getElementById('piano-proteine').value,
@@ -947,7 +947,7 @@ function openAddNote() {
   openModal('modal-note');
 }
 
-function saveNote() {
+async function saveNote() {
   const text = document.getElementById('note-text').value.trim();
   if (!text) return;
   noteAlim.unshift({ date: document.getElementById('note-date').value, text });
@@ -956,7 +956,7 @@ function saveNote() {
   closeModal('modal-note');
 }
 
-function deleteNote(i) {
+async function deleteNote(i) {
   noteAlim.splice(i, 1);
   await syncTable('note_alim', noteAlim);
   renderPiano();
@@ -970,7 +970,7 @@ function openAddPeso() {
   openModal('modal-peso');
 }
 
-function savePeso() {
+async function savePeso() {
   const val = parseFloat(document.getElementById('peso-val').value);
   if (!val) return;
   pesi.push({ date: document.getElementById('peso-date').value, val, note: document.getElementById('peso-note').value });
@@ -1015,7 +1015,7 @@ function renderPeso() {
   `).join('');
 }
 
-function deletePeso(i) {
+async function deletePeso(i) {
   pesi.splice(i, 1);
   await syncTable('pesi', pesi);
   renderPeso();
@@ -1101,7 +1101,7 @@ function handleFotoUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = ev => {
+  reader.onload = async ev => {
     fotografie.push({ id: Date.now(), date: today(), dataUrl: ev.target.result });
     await syncTable('fotografie', fotografie);
     renderFoto();
@@ -1126,7 +1126,7 @@ function renderFoto() {
   updateCompareSelects();
 }
 
-function deleteFoto(i) {
+async function deleteFoto(i) {
   if (!confirm('Eliminare questa foto?')) return;
   fotografie.splice(i, 1);
   await syncTable('fotografie', fotografie);
